@@ -6,13 +6,13 @@
 DHT22 dht(DHT22_PIN);
 
 const int rs=12, en=11, d4=5, d5=4, d6=3, d7=2;
-LiquidCrystal lcd(rs, en,d4, d5, d6, d7);
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
-const int sensorPin = A5;
-const float baselineTemp = 20.0;
+const int photoresistorPin = A5;
 
 void setup() {
-  // put your setup code here, to run once:
+  Serial.begin(9600);
+  
   dht.begin();
   lcd.begin(16, 2);
 }
@@ -25,35 +25,21 @@ void loop() {
     lcd.print("DHT sensor read failure!");
     return;
   }
-
-  double maxTemp = 0;
-  double minTemp = 99;
-
-  for(int i=0; i<100; i++) {
-    int sensorValue = analogRead(sensorPin);
-    double voltage = (sensorValue / 1024.0 ) * 5.0;
-    double temperature = (voltage - .5) * 100;
-
-    if (temperature > maxTemp) {
-      maxTemp = temperature;
-    }
-
-    if (temperature < minTemp) {
-      minTemp = temperature;
-    }
-  }
   
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("T:");
   lcd.print(dht.temperature_C);
   lcd.print(" H:");
   lcd.print(dht.humidity);
 
-  lcd.setCursor(0,1);
-  lcd.print("+:");
-  lcd.print(maxTemp);
-  lcd.print(" -:");
-  lcd.print(minTemp);
+  lcd.setCursor(0, 1);
+  lcd.print("RF: ");
+  lcd.print(dht.computeHeatIndex_C());
 
-  delay(3000);
+  // -2 to avoid 3-digit number
+  int photoresistorValue = (analogRead(photoresistorPin) / 10) - 2;
+  lcd.print(" ");
+  lcd.print(photoresistorValue);
+
+  delay(2000);
 }
