@@ -15,7 +15,6 @@ void setup() {
   // put your setup code here, to run once:
   dht.begin();
   lcd.begin(16, 2);
-  //lcd.print("Hello, world!");
 }
 
 void loop() {  
@@ -27,7 +26,6 @@ void loop() {
     return;
   }
 
-//  double summedTemp = 0;
   double maxTemp = 0;
   double minTemp = 99;
 
@@ -35,7 +33,6 @@ void loop() {
     int sensorValue = analogRead(sensorPin);
     double voltage = (sensorValue / 1024.0 ) * 5.0;
     double temperature = (voltage - .5) * 100;
-//    summedTemp += temperature;
 
     if (temperature > maxTemp) {
       maxTemp = temperature;
@@ -58,5 +55,5 @@ void loop() {
   lcd.print(" -:");
   lcd.print(minTemp);
 
-  delay(1000);
+  delay(3000);
 }
