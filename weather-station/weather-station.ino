@@ -21,25 +21,37 @@ void loop() {
   dht.readHumidity();
   dht.readTemperature();
 
-  if (isnan(dht.humidity) || isnan(dht.temperature_C)) {
+  float temperature = dht.temperature_C;
+  float humidity = dht.humidity;
+  float realFeel = dht.computeHeatIndex_C;
+
+  if (isnan(temperature) || isnan(humidity)) {
     lcd.print("DHT sensor read failure!");
     return;
   }
-  
-  lcd.setCursor(0, 0);
-  lcd.print("T:");
-  lcd.print(dht.temperature_C);
-  lcd.print(" H:");
-  lcd.print(dht.humidity);
-
-  lcd.setCursor(0, 1);
-  lcd.print("RF: ");
-  lcd.print(dht.computeHeatIndex_C());
 
   // -2 to avoid 3-digit number
   int photoresistorValue = (analogRead(photoresistorPin) / 10) - 2;
-  lcd.print(" ");
-  lcd.print(photoresistorValue);
+
+  printValuesToLCD(temperature, humidity, realFeel, photoresistorValue);
+
+  String output = String(temperature) + "," + humidity + "," + photoresistorValue;
+  Serial.println(output);
 
   delay(2000);
+}
+
+void printValuesToLCD(float temperature, float humidity, float realFeel, int photoresistorValue) {
+  lcd.setCursor(0, 0);
+  lcd.print("T:");
+  lcd.print(temperature);
+  lcd.print(" H:");
+  lcd.print(humidity);
+
+  lcd.setCursor(0, 1);
+  lcd.print("RF: ");
+  lcd.print(realFeel);
+
+  lcd.print(" ");
+  lcd.print(photoresistorValue);
 }
