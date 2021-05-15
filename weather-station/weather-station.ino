@@ -23,7 +23,7 @@ void loop() {
 
   float temperature = dht.temperature_C;
   float humidity = dht.humidity;
-  float realFeel = dht.computeHeatIndex_C;
+  float realFeel = dht.computeHeatIndex_C();
 
   if (isnan(temperature) || isnan(humidity)) {
     lcd.print("DHT sensor read failure!");
